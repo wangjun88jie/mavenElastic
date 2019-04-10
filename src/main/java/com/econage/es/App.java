@@ -10,12 +10,8 @@ public class App
 {
     public static void main( String[] args ) throws Exception {
         new EsWorkWithAutoConnetion(){
-
             @Override
             protected Object doAction() throws Exception {
-
-
-
                 return null;
             }
         }.doAction();

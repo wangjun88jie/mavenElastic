@@ -1,6 +1,7 @@
 package com.econage.es.search.service;
 
 import com.carrotsearch.hppc.cursors.ObjectObjectCursor;
+import com.econage.es.configure.ConfigureUtils;
 import com.econage.es.exception.ElasticException;
 import com.econage.es.pool.ClientService;
 import com.econage.es.pool.CommonVar;
@@ -39,7 +40,7 @@ public class EsIndexService extends AbstractEsClient {
     }
 
     private EsIndexService() {
-        logger.info(CommonVar.lOG_INFO+"instantiation");
+        logger.info(ConfigureUtils.configureEntity.getLogInfo()+"instantiation");
     }
 
 
@@ -86,7 +87,7 @@ public class EsIndexService extends AbstractEsClient {
             @Override
             protected T execute(TransportClient client) throws ElasticException {
                 DeleteIndexResponse response = ClientService.getInstance().getClient().admin().indices().prepareDelete(indexName).get();
-                logger.info(CommonVar.lOG_INFO+"delete index success 【"+indexName+"】");
+                logger.info(ConfigureUtils.configureEntity.getLogInfo()+"delete index success 【"+indexName+"】");
                 //todo 返回值 待定
                 return null;
             }
@@ -216,7 +217,7 @@ public class EsIndexService extends AbstractEsClient {
                 try {
                     PutMappingRequest mappingRequest = Requests.putMappingRequest(index).type(type).source(mapping);
                    client.admin().indices().putMapping(mappingRequest).get();
-                    logger.info(CommonVar.lOG_INFO+"create index:【"+index+"】 type:【"+type+"】Mapping success");
+                    logger.info(ConfigureUtils.configureEntity.getLogInfo()+"create index:【"+index+"】 type:【"+type+"】Mapping success");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     throw new ElasticException("",e);

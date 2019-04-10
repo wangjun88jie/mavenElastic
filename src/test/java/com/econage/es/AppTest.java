@@ -21,7 +21,7 @@ public class AppTest
      */
     @Test
     public void shouldAnswerWithTrue() throws ElasticException {
-        ClientService.getInstance().testServiceCofig();
+        ClientService.getInstance().testServiceCofig(null);
         //boolean is = EsUtils.indexExists("testindex");
       /*  Settings settings = EsUtils.createSettingsBuilder(5,0).build();
         List<MappingFildEntity> list = new ArrayList<MappingFildEntity>();

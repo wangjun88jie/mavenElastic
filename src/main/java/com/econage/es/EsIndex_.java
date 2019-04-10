@@ -1,5 +1,6 @@
 package com.econage.es;
 
+import com.econage.es.configure.ConfigureUtils;
 import com.econage.es.pool.CommonVar;
 import com.econage.es.search.searchEnum.EsColumnType;
 
@@ -15,8 +16,8 @@ public @interface EsIndex_ {
     String es_type() default "";
     //如果索引不存在 是否创建索引和Mapping
     boolean is_create() default false;
-    int shards_() default CommonVar.ES_SHARDS;
-    int replicas_() default CommonVar.ES_REPLICAS;
+    int shards_() default 0;
+    int replicas_() default 0;
 
 
 

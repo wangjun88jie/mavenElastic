@@ -1,5 +1,6 @@
 package com.econage.es.search.service;
 
+import com.econage.es.configure.ConfigureUtils;
 import com.econage.es.exception.ElasticException;
 import com.econage.es.pool.ClientService;
 import com.econage.es.pool.CommonVar;
@@ -32,6 +33,7 @@ import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 public class EsDataService extends AbstractEsClient {
     private static EsDataService ourInstance = new EsDataService();
     private static Logger logger = Logger.getLogger(EsDataService.class);
+    private static String logPrefix = ConfigureUtils.configureEntity.getLogInfo();
     public static EsDataService getInstance() {
         return ourInstance;
     }
@@ -48,10 +50,10 @@ public class EsDataService extends AbstractEsClient {
      * @param data
      */
     public  void createDocBulk(final String index, final String type, final String updateType, final List<EsDataMap> data) throws ElasticException {
-        logger.info(CommonVar.lOG_INFO+"create Bulk docs");
-        logger.info(CommonVar.lOG_INFO+"index:【"+index+"】");
-        logger.info(CommonVar.lOG_INFO+"type:【"+type+"】");
-        logger.info(CommonVar.lOG_INFO+"updateType:【"+updateType+"】");
+        logger.info(logPrefix+"create Bulk docs");
+        logger.info(logPrefix+"index:【"+index+"】");
+        logger.info(logPrefix+"type:【"+type+"】");
+        logger.info(logPrefix+"updateType:【"+updateType+"】");
         if (CollectionUtils.isEmpty(data)) {
             return ;
         }
@@ -69,7 +71,7 @@ public class EsDataService extends AbstractEsClient {
                         }
                         xContentBuilder = jsonBuilder().startObject();
                         for(String key:map.keySet()){
-                            logger.info(CommonVar.lOG_INFO+"key:"+key+"_____value:"+map.get(key));
+                            logger.info(logPrefix+"key:"+key+"_____value:"+map.get(key));
                             xContentBuilder.field(key,EsUtils.fillValue(key,map));
                         }
                         xContentBuilder.endObject();
@@ -81,7 +83,7 @@ public class EsDataService extends AbstractEsClient {
                         //服务器返回错误
                         throw new ElasticException(bulkResponse.buildFailureMessage());
                     }
-                    logger.info(CommonVar.lOG_INFO+"create Bulk docs success");
+                    logger.info(logPrefix+"create Bulk docs success");
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -102,11 +104,11 @@ public class EsDataService extends AbstractEsClient {
      */
     protected void updateDocBulkByColumn(final String index, final String type, final List<EsDataMap> data, final String[] columnArr) throws ElasticException {
         //todo 部分字段更新
-        logger.info(CommonVar.lOG_INFO+"update Bulk docs By Column");
-        logger.info(CommonVar.lOG_INFO+"index:【"+index+"】");
-        logger.info(CommonVar.lOG_INFO+"type:【"+type+"】");
+        logger.info(logPrefix+"update Bulk docs By Column");
+        logger.info(logPrefix+"index:【"+index+"】");
+        logger.info(logPrefix+"type:【"+type+"】");
         if(ArrayUtils.isEmpty(columnArr)){
-            throw new ElasticException(CommonVar.lOG_INFO+"update column is empty");
+            throw new ElasticException(logPrefix+"update column is empty");
         }
         if (CollectionUtils.isEmpty(data)) {
             return;
@@ -124,7 +126,7 @@ public class EsDataService extends AbstractEsClient {
                         }
                         xContentBuilder = jsonBuilder().startObject();
                         for(String key:columnArr){
-                            logger.info(CommonVar.lOG_INFO+"key:"+key+"_____value:"+map.get(key));
+                            logger.info(logPrefix+"key:"+key+"_____value:"+map.get(key));
 
                             xContentBuilder.field(key,EsUtils.fillValue(key,map));
                         }
@@ -138,7 +140,7 @@ public class EsDataService extends AbstractEsClient {
                         //服务器返回错误
                         throw new ElasticException(bulkResponse.buildFailureMessage());
                     }
-                    logger.info(CommonVar.lOG_INFO+"create Bulk docs success");
+                    logger.info(logPrefix+"create Bulk docs success");
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -161,10 +163,10 @@ public class EsDataService extends AbstractEsClient {
         if(MapUtils.isEmpty(map)){
             return ;
         }
-        logger.info(CommonVar.lOG_INFO+"create single doc");
-        logger.info(CommonVar.lOG_INFO+"index:【"+index+"】");
-        logger.info(CommonVar.lOG_INFO+"type:【"+type+"】");
-        logger.info(CommonVar.lOG_INFO+"updateType:【"+updateType+"】");
+        logger.info(logPrefix+"create single doc");
+        logger.info(logPrefix+"index:【"+index+"】");
+        logger.info(logPrefix+"type:【"+type+"】");
+        logger.info(logPrefix+"updateType:【"+updateType+"】");
 
         runTransaction(new TransactionAction() {
             @Override
@@ -172,7 +174,7 @@ public class EsDataService extends AbstractEsClient {
                 try {
                     XContentBuilder xContentBuilder = jsonBuilder().startObject();
                     for (String key : map.keySet()) {
-                        logger.info(CommonVar.lOG_INFO + "key:" + key + "_____value:" + map.get(key));
+                        logger.info(logPrefix + "key:" + key + "_____value:" + map.get(key));
                         if (key.equals("ES_ID")) {
                             //如果是ES的Id跳过
                             continue;
@@ -184,7 +186,7 @@ public class EsDataService extends AbstractEsClient {
                     xContentBuilder.close();
                     EsUtils.setPrepare(client,index,type,map.getEsId(),xContentBuilder,updateType);
 
-                    logger.info(CommonVar.lOG_INFO + "create single doc success");
+                    logger.info(logPrefix + "create single doc success");
                 }catch (IOException e){
                     new ElasticException("",e);
                 }
@@ -207,12 +209,12 @@ public class EsDataService extends AbstractEsClient {
         if(MapUtils.isEmpty(data)){
             return ;
         }
-        logger.info(CommonVar.lOG_INFO+"create single doc");
-        logger.info(CommonVar.lOG_INFO+"index:【"+index+"】");
-        logger.info(CommonVar.lOG_INFO+"type:【"+type+"】");
+        logger.info(logPrefix+"create single doc");
+        logger.info(logPrefix+"index:【"+index+"】");
+        logger.info(logPrefix+"type:【"+type+"】");
 
         if(ArrayUtils.isEmpty(columnArr)){
-            throw new ElasticException(CommonVar.lOG_INFO+"update column is empty");
+            throw new ElasticException(logPrefix+"update column is empty");
         }
         runTransaction(new TransactionAction() {
             @Override
@@ -220,7 +222,7 @@ public class EsDataService extends AbstractEsClient {
                 try {
                     XContentBuilder xContentBuilder = jsonBuilder().startObject();
                     for (String key : columnArr) {
-                        logger.info(CommonVar.lOG_INFO + "key:" + key + "_____value:" + data.get(key));
+                        logger.info(logPrefix + "key:" + key + "_____value:" + data.get(key));
                         if (key.equals("ES_ID")) {
                             //如果是ES的Id跳过
                             continue;
@@ -234,7 +236,7 @@ public class EsDataService extends AbstractEsClient {
                             setDoc(xContentBuilder).get();
 
 
-                    logger.info(CommonVar.lOG_INFO + "create single doc success");
+                    logger.info(logPrefix + "create single doc success");
                 }catch (IOException e){
                     new ElasticException("",e);
                 }
@@ -292,7 +294,7 @@ public class EsDataService extends AbstractEsClient {
                         .setId(id)//设置ID
                         .execute().actionGet();
                 //是否查找并删除
-                logger.info(CommonVar.lOG_INFO+result.toString());
+                logger.info(logPrefix+result.toString());
                 return false;
             }
         });
@@ -300,7 +302,7 @@ public class EsDataService extends AbstractEsClient {
 
 
     public static void main(String[] args) throws ElasticException {
-        ClientService.getInstance().testServiceCofig();
+        ClientService.getInstance().testServiceCofig(null);
         //EsDataService.getInstance().existsData("filedata3","order","222");
         EsDataService.getInstance().deleteById("test_index","test_type",
                 "1");

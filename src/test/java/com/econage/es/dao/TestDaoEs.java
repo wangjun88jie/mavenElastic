@@ -37,7 +37,7 @@ public class TestDaoEs extends AbstractEsSearchDao<TestEntity> {
     }
 
     public static void main(String[] args) throws Exception {
-        ClientService.getInstance().testServiceCofig();
+        //ClientService.getInstance().testServiceCofig(null);
         /*ClientService.getInstance().testServiceCofig();
         TestDaoEs testDao = new TestDaoEs();
         TestSearchForm searchForm = new TestSearchForm();
@@ -53,9 +53,9 @@ public class TestDaoEs extends AbstractEsSearchDao<TestEntity> {
         System.out.println(pattern.matcher("asDdf").matches());*/
         //throw new  ElasticException("qqq");
         List<TestEntity> list = new ArrayList<>();
-        TestEntity e1 = TestEntity.create(1,"qqq1111111111","www",new Date());
+        TestEntity e1 = TestEntity.create(4,"qqq1111111111","www",new Date());
         list.add(e1);
-        TestEntity e2 = TestEntity.create(2,"qqq111111113343411","w5454ww",new Date());
+        TestEntity e2 = TestEntity.create(5,"qqq111111113343411","w5454ww",new Date());
         list.add(e2);
         TestDaoEs testDao = new TestDaoEs();
         testDao.insertBulk(list);

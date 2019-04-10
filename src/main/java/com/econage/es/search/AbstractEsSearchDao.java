@@ -3,6 +3,7 @@ package com.econage.es.search;
 import com.econage.es.EsColumnProperty_;
 import com.econage.es.EsId_;
 import com.econage.es.EsIndex_;
+import com.econage.es.configure.ConfigureUtils;
 import com.econage.es.exception.ElasticException;
 import com.econage.es.pool.ClientService;
 import com.econage.es.pool.CommonVar;
@@ -65,8 +66,8 @@ public abstract class AbstractEsSearchDao<T> {
             this.esIndex = esIndex_.es_index();
             this.esType = esIndex_.es_type();
             this.isCreate = esIndex_.is_create();
-            this.shards = esIndex_.shards_();
-            this.replicas = esIndex_.replicas_();
+            this.shards = esIndex_.shards_()==0?ConfigureUtils.configureEntity.getShards():esIndex_.shards_();
+            this.replicas = esIndex_.replicas_()==0?ConfigureUtils.configureEntity.getReplicas():esIndex_.replicas_();
             this.fields = parseEntityField(entityClass);
             this.fieldMap = new HashMap<>();
             this.esColMap = new HashMap<>();
@@ -199,7 +200,7 @@ public abstract class AbstractEsSearchDao<T> {
                     field.setDouble(obj,Double.parseDouble(String.valueOf(sourceAsMap.get(entity.getColumn()))));
                 }else if("java.util.Date".equals(entity.getType()) && entity.getEsType().equals(EsColumnType.DATE)){
                     if(Strings.isNullOrEmpty(entity.getFormat())){
-                        field.set(obj,DateUtils.parseDate(String.valueOf(sourceAsMap.get(entity.getColumn())),CommonVar.DEFAULT_DATE_FORMAT));
+                        field.set(obj,DateUtils.parseDate(String.valueOf(sourceAsMap.get(entity.getColumn())),ConfigureUtils.configureEntity.getDefaultDateFormat()));
                     }else{
                         field.set(obj,DateUtils.parseDate(String.valueOf(sourceAsMap.get(entity.getColumn())),entity.getFormat()));
                     }
