@@ -7,27 +7,34 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.pool2.BasePooledObjectFactory;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
+import org.apache.http.HttpHost;
 import org.apache.log4j.Logger;
+import org.elasticsearch.client.*;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.List;
 
 
-public class TransportClientFactory extends BasePooledObjectFactory<TransportClient> {
-    private static Logger logger = Logger.getLogger(TransportClientFactory.class);
+public class RestHighClientFactory extends BasePooledObjectFactory<RestHighLevelClient> {
+    private static Logger logger = Logger.getLogger(RestHighClientFactory.class);
     private String[] hosts;
     private String[] ports;
     private String clusterName;
-    private int index = 0;
+    private String scheme;
+    private List<HttpHost> httpHostList;
     //其他参数待定
 
-    public void init(String[] hosts,String[] ports,String clusterName) throws ElasticInitException {
+    public void init(String[] hosts,String[] ports,String clusterName,String scheme) throws ElasticInitException {
+
         this.hosts = hosts;
         this.ports = ports;
         this.clusterName = clusterName;
+        this.scheme = scheme;
         if(StringUtils.isEmpty(clusterName)){
             logger.error(CommonVar.lOG_INFO+"未配置参数【clusterName】");
             throw new ElasticInitException(CommonVar.lOG_INFO+"未配置参数【clusterName】");
@@ -40,61 +47,55 @@ public class TransportClientFactory extends BasePooledObjectFactory<TransportCli
             logger.error(CommonVar.lOG_INFO+"未配置参数【ports】");
             throw new ElasticInitException(CommonVar.lOG_INFO+"未配置参数【ports】");
         }
+
         logger.info(CommonVar.lOG_INFO+"cluster:"+clusterName);
         logger.info(CommonVar.lOG_INFO+"hosts:"+StringUtils.join(hosts,","));
         logger.info(CommonVar.lOG_INFO+"ports:"+StringUtils.join(ports,","));
 
+        httpHostList = new ArrayList<>();
+        for(int i=0;i<hosts.length;i++){
+            httpHostList.add(new HttpHost(hosts[i], Integer.parseInt(ports[i]), scheme));
+        }
+
     }
 
     @Override
-    public TransportClient create() throws Exception {
+    public RestHighLevelClient create() throws Exception {
 
 
-        Settings settings = Settings.builder().put("cluster.name", clusterName)
-                .put("client.transport.sniff",true)
-                .build();
 
-        TransportClient client = new PreBuiltTransportClient(settings);
-
-        for(int i=0;i<hosts.length;i++){
-            client.addTransportAddresses(new TransportAddress(InetAddress.getByName(hosts[i]), Integer.parseInt(ports[i])));
-        }
+        RestHighLevelClient client = new RestHighLevelClient(
+            RestClient.builder(httpHostList.toArray(new HttpHost[]{})));
 
         return client;
     }
 
 
     @Override
-    public void destroyObject(PooledObject<TransportClient> p) throws Exception {
-        System.out.println("---------------destroyObject-----------------");
-        TransportClient client = p.getObject();
-        client.close();
+    public void destroyObject(PooledObject<RestHighLevelClient> p) throws Exception {
+        if(p instanceof RestHighLevelClient){
+            ((RestHighLevelClient)p).close();
+        }
     }
 
 
 
 
     @Override
-    public PooledObject<TransportClient> wrap(TransportClient transportClient) {
-        return new DefaultPooledObject(transportClient);
+    public PooledObject<RestHighLevelClient> wrap(RestHighLevelClient client) {
+        return new DefaultPooledObject(client);
     }
 
     @Override
-    public boolean validateObject(PooledObject<TransportClient> p) {
+    public boolean validateObject(PooledObject<RestHighLevelClient > p) {
         try {
-            TransportClient client = p.getObject();
-            if (CollectionUtils.isNotEmpty(client.listedNodes())){
+            RestHighLevelClient  client = p.getObject();
+           if (true){
                 return true;
             }
             return false;
         } catch (Throwable t) {
             return false;
-        }
-    }
-
-    public void passivateObject(PooledObject<TransportClient> p) throws Exception {
-        if(p instanceof TransportClient){
-            ((TransportClient)p).close();
         }
     }
 }

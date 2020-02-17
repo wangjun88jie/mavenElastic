@@ -2,6 +2,7 @@ package com.econage.es.search.service;
 
 import com.econage.es.configure.ConfigureUtils;
 import com.econage.es.exception.ElasticException;
+import com.econage.es.exception.ElasticInitException;
 import com.econage.es.pool.ClientService;
 import com.econage.es.pool.CommonVar;
 import com.econage.es.search.AbstractEsClient;
@@ -301,11 +302,11 @@ public class EsDataService extends AbstractEsClient {
     }
 
 
-    public static void main(String[] args) throws ElasticException {
+    public static void main(String[] args) throws ElasticInitException {
         ClientService.getInstance().testServiceCofig(null);
         //EsDataService.getInstance().existsData("filedata3","order","222");
-        EsDataService.getInstance().deleteById("test_index","test_type",
-                "1");
+        /*EsDataService.getInstance().deleteById("test_index","test_type",
+                "1");*/
     }
 
 }

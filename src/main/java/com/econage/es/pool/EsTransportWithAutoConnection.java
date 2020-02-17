@@ -4,9 +4,9 @@ import com.econage.es.configure.ConfigureUtils;
 
 import java.util.concurrent.Callable;
 
-public abstract class EsWorkWithAutoConnetion<V> implements Callable<V> {
+public abstract class EsTransportWithAutoConnection<V> implements Callable<V> {
 
-    public EsWorkWithAutoConnetion(){}
+    public EsTransportWithAutoConnection(){}
     @Override
     public V call() throws Exception {
 

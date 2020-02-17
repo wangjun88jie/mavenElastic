@@ -1,7 +1,7 @@
 package com.econage.es.pool;
 
 public interface CommonVar {
-    /*String ES_MAX_ACTIVE = "es.maxActive";//最大资源数的key
+    String ES_MAX_ACTIVE = "es.maxActive";//最大资源数的key
     String ES_INITIAL_SIZE = "es.initialSize";//最少资源空闲数
     //configMap.get("es.host"),Integer.parseInt(configMap.get("es.port")),configMap.get("es.clusterName")
 
@@ -19,7 +19,7 @@ public interface CommonVar {
     //todo 默认分片数  一般情况下ES集群只有一个，所以一般情况分片和副分片固定
     int ES_SHARDS = 5;
     //todo 默认副分片数
-    int ES_REPLICAS = 0;*/
+    int ES_REPLICAS = 0;
 
 
 

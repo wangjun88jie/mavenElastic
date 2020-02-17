@@ -1,4 +1,5 @@
 package com.econage.es.configure;
+import com.econage.es.exception.ElasticInitException;
 import com.econage.es.pool.ClientService;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -25,16 +26,30 @@ public class ConfigureUtils{
         configureEntity.setMaxActive(getIntValue("maxActive")>0?getIntValue("maxActive"):10);
         configureEntity.setMaxIdle(getIntValue("maxIdle")>0?getIntValue("maxIdle"):10);
         configureEntity.setMinIdle(getIntValue("minIdle")>0?getIntValue("minIdle"):3);
-        configureEntity.setHost(getStringValue("host").trim());
-        configureEntity.setPort(getIntValue("port")>0?getIntValue("port"):9300);
+        if(StringUtils.isNotEmpty(getStringValue("hosts").trim())){
+            configureEntity.setHosts(getStringValue("hosts").trim().split(","));
+        }
+
+        if(StringUtils.isNotEmpty(getStringValue("ports").trim())){
+            configureEntity.setPorts(getStringValue("ports").trim().split(","));
+        }
+
+
         configureEntity.setClusterName(getStringValue("clusterName").trim());
         configureEntity.setLogInfo(getStringValue("logInfo").trim());
         configureEntity.setDefaultDateFormat(StringUtils.isNotEmpty(getStringValue("defaultDateFormat"))?
                 getStringValue("defaultDateFormat").trim():"yyyy-MM-dd hh:mm:ss");
         configureEntity.setShards(getIntValue("shards"));
         configureEntity.setReplicas(getIntValue("replicas"));
+        configureEntity.setScheme(StringUtils.isNotEmpty(getStringValue("scheme"))?
+                getStringValue("scheme").trim():"http");
+
         //启动对象池
-        ClientService.getInstance().testServiceCofig(configureEntity);
+        try {
+            ClientService.getInstance().testServiceCofig(configureEntity);
+        } catch (ElasticInitException e) {
+            e.printStackTrace();
+        }
     }
 
     public static String getStringValue(String key){

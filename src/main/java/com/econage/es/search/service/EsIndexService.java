@@ -14,12 +14,13 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.formula.functions.T;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.action.admin.indices.settings.get.GetSettingsResponse;
+import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.Requests;
+import org.elasticsearch.client.Response;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -86,7 +87,7 @@ public class EsIndexService extends AbstractEsClient {
         runTransaction(new TransactionAction() {
             @Override
             protected T execute(TransportClient client) throws ElasticException {
-                DeleteIndexResponse response = ClientService.getInstance().getClient().admin().indices().prepareDelete(indexName).get();
+                AcknowledgedResponse response = ClientService.getInstance().getClient().admin().indices().prepareDelete(indexName).get();
                 logger.info(ConfigureUtils.configureEntity.getLogInfo()+"delete index success 【"+indexName+"】");
                 //todo 返回值 待定
                 return null;

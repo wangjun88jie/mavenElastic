@@ -17,6 +17,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.lucene.search.TotalHits;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -153,7 +154,7 @@ public abstract class AbstractEsSearchDao<T> {
     private List<T> fillEntity(SearchResponse response) {
         Map<String, ProfileShardResult> profileMap = response.getProfileResults();
         SearchHits hits = response.getHits();
-        long total = hits.getTotalHits();
+        TotalHits total = hits.getTotalHits();
         //logger.info(CommonVar.lOG_INFO+"total:"+total);
         SearchHit[] hitArray = hits.getHits();
         List<T> list = new ArrayList<>();

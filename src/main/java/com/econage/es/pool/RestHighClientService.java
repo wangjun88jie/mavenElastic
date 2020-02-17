@@ -4,27 +4,26 @@ import com.econage.es.exception.ElasticInitException;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.apache.log4j.Logger;
-import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.client.RestHighLevelClient;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ClientService {
+public class RestHighClientService {
     private static Logger logger = Logger.getLogger(ClientService.class);
-    private static ClientService ourInstance = new ClientService();
+    private static RestHighClientService ourInstance = new RestHighClientService();
 
-    public static ClientService getInstance() {
+    public static RestHighClientService getInstance() {
         return ourInstance;
     }
     private GenericObjectPoolConfig poolConfig = new GenericObjectPoolConfig();
-    TransportClientFactory transportFactory = new TransportClientFactory();
     RestHighClientFactory restHighClientFactory = new RestHighClientFactory();
     //RestHighClientFactory
-    private static GenericObjectPool<TransportClient> transportPool;
-    private ClientService() {
+    private static GenericObjectPool<RestHighLevelClient> pool;
+    private RestHighClientService() {
 
     }
-    public void setCinfig(ConfigureEntity configureEntity) throws ElasticInitException {
+    public void setConfig(ConfigureEntity configureEntity) throws ElasticInitException {
         /*logger.info(CommonVar.lOG_INFO+"ES和连接池配置:");
         logger.info(CommonVar.lOG_INFO+"最多创建资源数:"+config.get(CommonVar.ES_MAX_ACTIVE));
         logger.info(CommonVar.lOG_INFO+"最少资源空闲数:"+config.get(CommonVar.ES_INITIAL_SIZE));*/
@@ -34,17 +33,16 @@ public class ClientService {
         poolConfig.setMinIdle(configureEntity.getMinIdle());//最少资源空闲数
 
         poolConfig.setTestOnBorrow(true);//borrow时 校验
-        transportFactory.init(configureEntity.getHosts(),configureEntity.getPorts(),configureEntity.getClusterName());
-        restHighClientFactory.init(configureEntity.getHosts(),configureEntity.getPorts(),configureEntity.getClusterName(),"");
+        restHighClientFactory.init(configureEntity.getHosts(),configureEntity.getPorts(),configureEntity.getClusterName(),configureEntity.getScheme());
 
         poolConfig.setTestOnBorrow(true);
-        transportPool = new GenericObjectPool(transportFactory, poolConfig);
+        pool = new GenericObjectPool(restHighClientFactory, poolConfig);
 
     }
-    public TransportClient getClient() {
-        TransportClient client = null;
+    public RestHighLevelClient getClient() {
+        RestHighLevelClient client = null;
         try {
-            client = transportPool.borrowObject();
+            client = pool.borrowObject();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -54,9 +52,9 @@ public class ClientService {
 
 
 
-    public void returnObject(TransportClient client){
+    public void returnObject(RestHighLevelClient client){
         try{
-            transportPool.returnObject(client);
+            pool.returnObject(client);
         }catch(Exception e){
             e.printStackTrace();
             if(client != null){
@@ -71,7 +69,7 @@ public class ClientService {
 
     public void testServiceCofig(ConfigureEntity entity) throws ElasticInitException {
         Map<String,String> mapCofig = new HashMap<String,String>();
-        ClientService.getInstance().setCinfig(entity);
+        RestHighClientService.getInstance().setConfig(entity);
     }
 
 
