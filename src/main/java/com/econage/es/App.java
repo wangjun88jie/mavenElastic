@@ -16,7 +16,7 @@ public class App
             protected Object doAction() throws Exception {
                 RestHighClientService.getInstance().testServiceCofig(ConfigureUtils.configureEntity);
                 Test test = new Test();
-                test.pingTest();
+                test.searchMatchAll();
                 //test.createIndex();
                 //test.deleteIndex();
                 return null;

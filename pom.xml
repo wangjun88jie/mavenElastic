@@ -27,10 +27,20 @@
     </dependency>
 
 
-    <dependency>
+    <!--<dependency>
       <groupId>org.elasticsearch.client</groupId>
       <artifactId>transport</artifactId>
       <version>6.4.2</version>
+    </dependency>-->
+    <dependency>
+      <groupId>org.elasticsearch.client</groupId>
+      <artifactId>elasticsearch-rest-high-level-client</artifactId>
+      <version>7.3.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.elasticsearch.client</groupId>
+      <artifactId>transport</artifactId>
+      <version>7.3.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -104,17 +114,34 @@
       <version>1.10</version>
     </dependency>
 
+
+
+
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-core</artifactId>
+      <version>8.1.0</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-queryparser -->
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-queryparser</artifactId>
+      <version>8.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.8.1</version>
+    </dependency>
   </dependencies>
 
   <build>
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
       <plugins>
-        <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
         <plugin>
           <artifactId>maven-clean-plugin</artifactId>
           <version>3.1.0</version>
         </plugin>
-        <!-- default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
         <plugin>
           <artifactId>maven-resources-plugin</artifactId>
           <version>3.0.2</version>
@@ -148,7 +175,65 @@
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>3.0.0</version>
         </plugin>
+
+
+
+        <!--<plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <source>1.8</source>
+            <target>1.8</target>
+            <encoding>UTF-8</encoding>
+            &lt;!&ndash;配置本地jar包在项目的存放路径&ndash;&gt;
+            <compilerArguments>
+              <extdirs>${project.basedir}/src/main/webapp/WEB-INF/lib</extdirs>
+            </compilerArguments>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <configuration>
+            <webResources>
+              <resource>
+                &lt;!&ndash;配置本地jar包在项目中的存放路径&ndash;&gt;
+                <directory>src/main/webapp/WEB-INF/lib/</directory>
+                &lt;!&ndash;配置打包时jar包的存放路径&ndash;&gt;
+                <targetPath>WEB-INF/lib</targetPath>
+                <includes>
+                  <include>**/*.jar</include>
+                </includes>
+              </resource>
+            </webResources>
+          </configuration>
+        </plugin>-->
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <configuration>
+                  <source>1.8</source>
+                  <target>1.8</target>
+              </configuration>
+          </plugin>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-jar-plugin</artifactId>
+              <configuration>
+                  <archive>
+                      <manifest>
+                          <addClasspath>true</addClasspath>
+                          <useUniqueVersions>false</useUniqueVersions>
+                          <classpathPrefix>lib/</classpathPrefix>
+                          <mainClass>spark.WordCount</mainClass>
+                      </manifest>
+                  </archive>
+              </configuration>
+          </plugin>
       </plugins>
+
+
+
+
     </pluginManagement>
   </build>
 </project>

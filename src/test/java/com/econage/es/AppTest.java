@@ -21,9 +21,9 @@ public class AppTest
      */
     @Test
     public void shouldAnswerWithTrue() throws ElasticException {
-        ClientService.getInstance().testServiceCofig(null);
+       /* ClientService.getInstance().testServiceCofig(null);
         //boolean is = EsUtils.indexExists("testindex");
-      /*  Settings settings = EsUtils.createSettingsBuilder(5,0).build();
+      *//*  Settings settings = EsUtils.createSettingsBuilder(5,0).build();
         List<MappingFildEntity> list = new ArrayList<MappingFildEntity>();
         MappingFildEntity entity = new MappingFildEntity();
         entity.setName("ID_");
@@ -35,7 +35,7 @@ public class AppTest
         list.add(entity1);
         XContentBuilder mapping = EsUtils.createMapping("test_type_",list);
 
-        EsUtils.createIndex("testindex",settings,mapping);*/
+        EsUtils.createIndex("testindex",settings,mapping);*//*
         //todo 删除索引
         //EsUtils.deleteIndex("testindex");
         //todo 创建索引
@@ -46,7 +46,7 @@ public class AppTest
         //assertTrue( true );
 
         //todo 设置mapping信息
-       /* List<MappingFildEntity> list = new ArrayList<MappingFildEntity>();
+       *//* List<MappingFildEntity> list = new ArrayList<MappingFildEntity>();
         MappingFildEntity entity = new MappingFildEntity();
         entity.setName("ID_");
         entity.setType(EsColumnType.INTEGER);
@@ -56,7 +56,7 @@ public class AppTest
         entity1.setType(EsColumnType.TEXT);
         list.add(entity1);
 
-        EsUtils.putMapping("testindex","test_type_",EsUtils.createMapping(list));*/
+        EsUtils.putMapping("testindex","test_type_",EsUtils.createMapping(list));*//*
         //todo 新增记录
        List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
         Map<String,Object> map1 = new HashMap<>();
@@ -69,7 +69,7 @@ public class AppTest
         map2.put("ID_","2");
         map2.put("NAME_","rrrr");
         list.add(map2);
-        //EsUtils.createDocBulk(list,"testindex","test_type_","index");
+        //EsUtils.createDocBulk(list,"testindex","test_type_","index");*/
 
 
     }
